@@ -22,3 +22,29 @@ WHERE nombre_usuario = 'sofia_auditora';
 DELETE FROM DONADORES
 WHERE id_donador = 5;
 COMMIT;
+
+-- ==========================
+-- 2 UPDATE adicionales
+-- ==========================
+
+-- 3. Actualizar categoría de un producto
+UPDATE PRODUCTOS
+SET categoria = 'Lacteos'
+WHERE id_producto = 10;
+
+-- 4. Actualizar dirección de un beneficiario
+UPDATE BENEFICIARIOS
+SET direccion = 'Calle Nueva 123'
+WHERE id_beneficiario = 6;
+
+-- ==========================
+-- 2 DELETE adicionales
+-- ==========================
+
+-- 3. Eliminar entrega de prueba
+DELETE FROM ENTREGAS WHERE id_entrega = 10;
+
+-- 4. Eliminar detalle de donación de prueba
+DELETE FROM DETALLE_DONACION WHERE id_detalle_donacion = 10;
+
+COMMIT;

@@ -63,3 +63,38 @@ id_usuario,
 nombre_usuario,
 rol_usuario
 FROM USUARIOS;
+
+-- Vistas adicionales (5)
+
+-- 6. Donadores sin donaciones
+CREATE OR REPLACE VIEW v_donadores_sin_donaciones AS
+SELECT d.id_donador, d.nombre_razon_social, d.correo_electronico
+FROM DONADORES d
+WHERE d.id_donador NOT IN (SELECT id_donador FROM DONACIONES);
+
+-- 7. Productos agrupados por categoría con existencia total
+CREATE OR REPLACE VIEW v_productos_por_categoria AS
+SELECT categoria, COUNT(*) total_tipos, SUM(cantidad_existencia) total_existencia
+FROM PRODUCTOS
+GROUP BY categoria;
+
+-- 8. Entregas por beneficiario (resumen)
+CREATE OR REPLACE VIEW v_entregas_por_beneficiario AS
+SELECT b.id_beneficiario, b.nombre_completo, COUNT(e.id_entrega) entregas_realizadas
+FROM BENEFICIARIOS b
+LEFT JOIN ENTREGAS e ON b.id_beneficiario = e.id_beneficiario
+GROUP BY b.id_beneficiario, b.nombre_completo;
+
+-- 9. Resumen mensual de donaciones (año-mes)
+CREATE OR REPLACE VIEW v_resumen_donaciones_mensual AS
+SELECT TO_CHAR(d.fecha_donacion, 'YYYY-MM') anio_mes, COUNT(*) total_donaciones, SUM(dd.cantidad_donada) total_unidades
+FROM DONACIONES d
+JOIN DETALLE_DONACION dd ON d.id_donacion = dd.id_donacion
+GROUP BY TO_CHAR(d.fecha_donacion, 'YYYY-MM');
+
+-- 10. Productos con caducidad próxima (30 días)
+CREATE OR REPLACE VIEW v_productos_caducidad_30dias AS
+SELECT id_producto, nombre_producto, fecha_caducidad
+FROM PRODUCTOS
+WHERE fecha_caducidad BETWEEN SYSDATE AND SYSDATE + 30
+ORDER BY fecha_caducidad ASC;

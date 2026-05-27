@@ -41,3 +41,44 @@ RETURN 0;
 END IF;
 END;
 /
+
+-- 4. Funcion: fn_total_unidades_donadas_por_donador
+CREATE OR REPLACE FUNCTION fn_total_unidades_donadas_por_donador (
+	p_id_donador IN NUMBER
+) RETURN NUMBER AS
+	v_total NUMBER := 0;
+BEGIN
+	SELECT NVL(SUM(dd.cantidad_donada),0) INTO v_total
+	FROM DONACIONES d JOIN DETALLE_DONACION dd ON d.id_donacion = dd.id_donacion
+	WHERE d.id_donador = p_id_donador;
+	RETURN v_total;
+END;
+/
+
+-- 5. Funcion: fn_esta_en_inventario (retorna 1 si existe stock >0)
+CREATE OR REPLACE FUNCTION fn_esta_en_inventario (
+	p_id_producto IN NUMBER
+) RETURN NUMBER AS
+	v_exist NUMBER := 0;
+BEGIN
+	SELECT CASE WHEN NVL(cantidad_existencia,0) > 0 THEN 1 ELSE 0 END INTO v_exist
+	FROM PRODUCTOS WHERE id_producto = p_id_producto;
+	RETURN v_exist;
+EXCEPTION WHEN NO_DATA_FOUND THEN RETURN 0;
+END;
+/
+
+-- 6. Funcion: fn_ultima_entrega_producto (ultima fecha de entrega para un producto)
+CREATE OR REPLACE FUNCTION fn_ultima_entrega_producto (
+	p_id_producto IN NUMBER
+) RETURN DATE AS
+	v_fecha DATE;
+BEGIN
+	SELECT MAX(e.fecha_entrega) INTO v_fecha
+	FROM DETALLE_ENTREGA de
+	JOIN ENTREGAS e ON de.id_entrega = e.id_entrega
+	WHERE de.id_producto = p_id_producto;
+	RETURN v_fecha;
+EXCEPTION WHEN NO_DATA_FOUND THEN RETURN NULL;
+END;
+/
