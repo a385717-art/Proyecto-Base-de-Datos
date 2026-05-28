@@ -1,50 +1,78 @@
-﻿--  BANCO DE ALIMENTOS COMUNITARIO
---  -- UPDATEs y DELETEs
---  Fundamentos de Bases de Datos - Tercer Parcial
+﻿-- ============================================================
+--  BANCO DE ALIMENTOS COMUNITARIO
+--  03_updates_deletes.sql — 3 INTEGRANTES (6 UPDATE, 6 DELETE)
+-- ============================================================
 
--- REQUISITO: 2 UPDATE Y 2 DELETE
+-- ============================================================
+-- INTEGRANTE 1 — 2 UPDATE + 2 DELETE
+-- ============================================================
 
--- 1. PRIMER UPDATE: Cambiar el teléfono de un donador específico
+-- UPDATE 1: Cambiar teléfono de un donador
 UPDATE DONADORES
 SET telefono = '6140001111'
 WHERE nombre_razon_social = 'Maria Gonzalez';
 
--- 2. SEGUNDO UPDATE: Actualizar la contraseña de un usuario por seguridad
+-- UPDATE 2: Actualizar contraseña de un usuario
 UPDATE USUARIOS
 SET contrasena = 'nueva_clave_2026'
 WHERE nombre_usuario = 'juan_empleado';
 
--- 3. PRIMER DELETE: Eliminar un usuario de pruebas que ya no se necesite
+-- DELETE 1: Eliminar usuario de prueba
 DELETE FROM USUARIOS
 WHERE nombre_usuario = 'sofia_auditora';
 
--- 4. SEGUNDO DELETE: Eliminar un donador que solicitó ser dado de baja (que no tenga transacciones ligadas)
+-- DELETE 2: Eliminar donador sin transacciones ligadas
 DELETE FROM DONADORES
-WHERE id_donador = 5;
+WHERE nombre_razon_social = 'Hogar Ayuda'
+  AND id_donador NOT IN (SELECT id_donador FROM DONACIONES);
+
 COMMIT;
 
--- ==========================
--- 2 UPDATE adicionales
--- ==========================
+-- ============================================================
+-- INTEGRANTE 2 — 2 UPDATE + 2 DELETE
+-- ============================================================
 
--- 3. Actualizar categoría de un producto
+-- UPDATE 3: Actualizar categoría de un producto
 UPDATE PRODUCTOS
 SET categoria = 'Lacteos'
-WHERE id_producto = 10;
+WHERE nombre_producto = 'Leche en Polvo 500g';
 
--- 4. Actualizar dirección de un beneficiario
+-- UPDATE 4: Actualizar dirección de un beneficiario
 UPDATE BENEFICIARIOS
-SET direccion = 'Calle Nueva 123'
-WHERE id_beneficiario = 6;
+SET direccion = 'Calle Nueva 123, Col. Centro'
+WHERE nombre_completo = 'Familia Torres';
 
--- ==========================
--- 2 DELETE adicionales
--- ==========================
+-- DELETE 3: Eliminar un detalle de donación específico
+DELETE FROM DETALLE_DONACION
+WHERE id_donacion = 10 AND id_producto = 10;
 
--- 3. Eliminar entrega de prueba
+-- DELETE 4: Eliminar una entrega de prueba y su detalle
+DELETE FROM DETALLE_ENTREGA WHERE id_entrega = 10;
 DELETE FROM ENTREGAS WHERE id_entrega = 10;
 
--- 4. Eliminar detalle de donación de prueba
-DELETE FROM DETALLE_DONACION WHERE id_detalle_donacion = 10;
+COMMIT;
+
+-- ============================================================
+-- INTEGRANTE 3 — 2 UPDATE + 2 DELETE
+-- ============================================================
+
+-- UPDATE 5: Aumentar manualmente el stock de un producto
+UPDATE PRODUCTOS
+SET cantidad_existencia = cantidad_existencia + 50
+WHERE nombre_producto = 'Avena en Hojuelas 500g';
+
+-- UPDATE 6: Cambiar rol de un usuario a CONSULTA
+UPDATE USUARIOS
+SET rol_usuario = 'CONSULTA'
+WHERE nombre_usuario = 'pedro_aux';
+
+-- DELETE 5: Eliminar un beneficiario sin entregas registradas
+DELETE FROM BENEFICIARIOS
+WHERE nombre_completo = 'Familia Ibarra Cruz'
+  AND id_beneficiario NOT IN (SELECT id_beneficiario FROM ENTREGAS);
+
+-- DELETE 6: Eliminar usuario inactivo
+DELETE FROM USUARIOS
+WHERE nombre_usuario = 'jorge_cons';
 
 COMMIT;

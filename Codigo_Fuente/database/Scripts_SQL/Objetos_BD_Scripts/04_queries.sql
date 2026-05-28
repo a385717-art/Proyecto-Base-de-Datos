@@ -1,102 +1,192 @@
-﻿--  BANCO DE ALIMENTOS COMUNITARIO
---  -- 10 Consultas SQL
---  Fundamentos de Bases de Datos - Tercer Parcial
+﻿-- ============================================================
+--  BANCO DE ALIMENTOS COMUNITARIO
+--  04_queries.sql — 30 CONSULTAS (3 integrantes x 10)
+-- ============================================================
 
--- 1. Listar todos los productos en orden alfabético
-SELECT nombre_producto, categoria, cantidad_existencia FROM PRODUCTOS ORDER BY nombre_producto ASC;
+-- ============================================================
+-- INTEGRANTE 1 — Queries 1 al 10
+-- ============================================================
 
--- 2. Buscar donadores que pertenezcan a una avenida específica
-SELECT nombre_razon_social, correo_electronico FROM DONADORES WHERE direccion LIKE '%Av.%';
+-- Q1: Listar todos los productos en orden alfabético
+SELECT nombre_producto, categoria, cantidad_existencia
+FROM PRODUCTOS ORDER BY nombre_producto ASC;
 
--- 3. Contar la cantidad total de productos registrados por categoría
-SELECT categoria, COUNT(*) as total_productos FROM PRODUCTOS GROUP BY categoria;
+-- Q2: Buscar donadores que tengan dirección en una avenida
+SELECT nombre_razon_social, correo_electronico
+FROM DONADORES WHERE direccion LIKE '%Av.%';
 
--- 4. Mostrar las familias beneficiarias que tienen más de 4 integrantes
-SELECT nombre_completo, num_integrantes_familia FROM BENEFICIARIOS WHERE num_integrantes_familia > 4;
+-- Q3: Contar productos registrados por categoría
+SELECT categoria, COUNT(*) AS total_productos
+FROM PRODUCTOS GROUP BY categoria;
 
--- 5. Obtener la suma total de productos en existencia en el banco de alimentos
-SELECT SUM(cantidad_existencia) as total_piezas_inventario FROM PRODUCTOS;
+-- Q4: Beneficiarios con más de 4 integrantes de familia
+SELECT nombre_completo, num_integrantes_familia
+FROM BENEFICIARIOS WHERE num_integrantes_familia > 4;
 
--- 6. Ver el detalle completo de las donaciones asociando nombres de productos y donadores
-SELECT dr.nombre_razon_social, p.nombre_producto, dd.cantidad_donada
+-- Q5: Suma total de existencias en inventario
+SELECT SUM(cantidad_existencia) AS total_piezas_inventario
+FROM PRODUCTOS;
+
+-- Q6: Detalle completo de donaciones con nombres de donadores y productos
+SELECT dr.nombre_razon_social, p.nombre_producto, dd.cantidad_donada, d.fecha_donacion
 FROM DETALLE_DONACION dd
-JOIN DONACIONES d ON dd.id_donacion = d.id_donacion
-JOIN DONADORES dr ON d.id_donador = dr.id_donador
-JOIN PRODUCTOS p ON dd.id_producto = p.id_producto;
+JOIN DONACIONES d  ON dd.id_donacion = d.id_donacion
+JOIN DONADORES  dr ON d.id_donador   = dr.id_donador
+JOIN PRODUCTOS  p  ON dd.id_producto = p.id_producto;
 
--- 7. Mostrar qué productos ha recibido la 'Familia Perez Lopez'
+-- Q7: Productos recibidos por la Familia Perez Lopez
 SELECT b.nombre_completo, p.nombre_producto, de.cantidad_entregada
 FROM DETALLE_ENTREGA de
-JOIN ENTREGAS e ON de.id_entrega = e.id_entrega
-JOIN BENEFICIARIOS b ON e.id_beneficiario = b.id_beneficiario
-JOIN PRODUCTOS p ON de.id_producto = p.id_producto
+JOIN ENTREGAS      e ON de.id_entrega      = e.id_entrega
+JOIN BENEFICIARIOS b ON e.id_beneficiario  = b.id_beneficiario
+JOIN PRODUCTOS     p ON de.id_producto     = p.id_producto
 WHERE b.nombre_completo = 'Familia Perez Lopez';
 
--- 8. Obtener el producto con el inventario más alto registrado
-SELECT nombre_producto, cantidad_existencia FROM PRODUCTOS WHERE cantidad_existencia = (SELECT MAX(cantidad_existencia) FROM PRODUCTOS);
+-- Q8: Producto con el inventario más alto
+SELECT nombre_producto, cantidad_existencia
+FROM PRODUCTOS
+WHERE cantidad_existencia = (SELECT MAX(cantidad_existencia) FROM PRODUCTOS);
 
--- 9. Listar las entregas realizadas durante el mes de mayo de 2026
-SELECT id_entrega, fecha_entrega FROM ENTREGAS WHERE fecha_entrega BETWEEN TO_DATE('2026-05-01','YYYY-MM-DD') AND TO_DATE('2026-05-31','YYYY-MM-DD');
+-- Q9: Entregas realizadas en mayo 2026
+SELECT id_entrega, fecha_entrega
+FROM ENTREGAS
+WHERE fecha_entrega BETWEEN TO_DATE('2026-05-01','YYYY-MM-DD')
+                        AND TO_DATE('2026-05-31','YYYY-MM-DD');
 
--- 10. Listar los usuarios del sistema que tengan el rol de 'OPERADOR'
-SELECT nombre_usuario FROM USUARIOS WHERE rol_usuario = 'OPERADOR';
+-- Q10: Usuarios con rol OPERADOR
+SELECT nombre_usuario, rol_usuario
+FROM USUARIOS WHERE rol_usuario = 'OPERADOR';
 
--- ==========================================
--- 11-20: Consultas adicionales
--- ==========================================
+-- ============================================================
+-- INTEGRANTE 2 — Queries 11 al 20
+-- ============================================================
 
--- 11. Total de donaciones (cantidad de piezas) por donador
-SELECT dr.nombre_razon_social, SUM(dd.cantidad_donada) total_donado
+-- Q11: Total de unidades donadas por cada donador
+SELECT dr.nombre_razon_social, SUM(dd.cantidad_donada) AS total_donado
 FROM DETALLE_DONACION dd
-JOIN DONACIONES d ON dd.id_donacion = d.id_donacion
-JOIN DONADORES dr ON d.id_donador = dr.id_donador
+JOIN DONACIONES d  ON dd.id_donacion = d.id_donacion
+JOIN DONADORES  dr ON d.id_donador   = dr.id_donador
 GROUP BY dr.nombre_razon_social
 ORDER BY total_donado DESC;
 
--- 12. Donadores que no han registrado donaciones
-SELECT nombre_razon_social FROM DONADORES
+-- Q12: Donadores que no han registrado ninguna donación
+SELECT nombre_razon_social
+FROM DONADORES
 WHERE id_donador NOT IN (SELECT id_donador FROM DONACIONES);
 
--- 13. Productos por categoría con suma de existencia
-SELECT categoria, SUM(cantidad_existencia) total_por_categoria
+-- Q13: Existencia total agrupada por categoría
+SELECT categoria, SUM(cantidad_existencia) AS total_por_categoria
 FROM PRODUCTOS
-GROUP BY categoria
-ORDER BY total_por_categoria DESC;
+GROUP BY categoria ORDER BY total_por_categoria DESC;
 
--- 14. Cantidad de entregas por beneficiario
-SELECT b.nombre_completo, COUNT(e.id_entrega) as entregas_realizadas
-FROM ENTREGAS e
-JOIN BENEFICIARIOS b ON e.id_beneficiario = b.id_beneficiario
+-- Q14: Cantidad de entregas realizadas por cada beneficiario
+SELECT b.nombre_completo, COUNT(e.id_entrega) AS entregas_realizadas
+FROM BENEFICIARIOS b
+LEFT JOIN ENTREGAS e ON b.id_beneficiario = e.id_beneficiario
 GROUP BY b.nombre_completo
 ORDER BY entregas_realizadas DESC;
 
--- 15. Promedio de integrantes por beneficiario (repetida con formato distinto)
-SELECT ROUND(AVG(num_integrantes_familia),2) AS promedio_integrantes FROM BENEFICIARIOS;
+-- Q15: Promedio de integrantes por familia beneficiaria
+SELECT ROUND(AVG(num_integrantes_familia), 2) AS promedio_integrantes
+FROM BENEFICIARIOS;
 
--- 16. Últimas 5 donaciones registradas
+-- Q16: Últimas 5 donaciones registradas
 SELECT d.id_donacion, dr.nombre_razon_social, d.fecha_donacion
 FROM DONACIONES d
 JOIN DONADORES dr ON d.id_donador = dr.id_donador
 ORDER BY d.fecha_donacion DESC
 FETCH FIRST 5 ROWS ONLY;
 
--- 17. Productos con stock bajo (menos de 50 unidades)
-SELECT id_producto, nombre_producto, cantidad_existencia FROM PRODUCTOS WHERE cantidad_existencia < 50 ORDER BY cantidad_existencia ASC;
+-- Q17: Productos con stock bajo (menos de 50 unidades)
+SELECT nombre_producto, cantidad_existencia
+FROM PRODUCTOS WHERE cantidad_existencia < 50
+ORDER BY cantidad_existencia ASC;
 
--- 18. Total entregado por producto
-SELECT p.nombre_producto, SUM(de.cantidad_entregada) total_entregado
+-- Q18: Total de unidades entregadas por producto
+SELECT p.nombre_producto, SUM(de.cantidad_entregada) AS total_entregado
 FROM DETALLE_ENTREGA de
 JOIN PRODUCTOS p ON de.id_producto = p.id_producto
-GROUP BY p.nombre_producto
-ORDER BY total_entregado DESC;
+GROUP BY p.nombre_producto ORDER BY total_entregado DESC;
 
--- 19. Top 5 productos más donados
-SELECT p.nombre_producto, SUM(dd.cantidad_donada) total_donado
+-- Q19: Top 5 productos más donados
+SELECT p.nombre_producto, SUM(dd.cantidad_donada) AS total_donado
 FROM DETALLE_DONACION dd
 JOIN PRODUCTOS p ON dd.id_producto = p.id_producto
 GROUP BY p.nombre_producto
 ORDER BY total_donado DESC
 FETCH FIRST 5 ROWS ONLY;
 
--- 20. Contacto rápido de donadores (nombre y correo)
-SELECT nombre_razon_social, correo_electronico FROM DONADORES WHERE correo_electronico IS NOT NULL;
+-- Q20: Contacto de donadores que tienen correo registrado
+SELECT nombre_razon_social, telefono, correo_electronico
+FROM DONADORES WHERE correo_electronico IS NOT NULL;
+
+-- ============================================================
+-- INTEGRANTE 3 — Queries 21 al 30
+-- ============================================================
+
+-- Q21: Beneficiarios que nunca han recibido una entrega
+SELECT nombre_completo
+FROM BENEFICIARIOS
+WHERE id_beneficiario NOT IN (SELECT id_beneficiario FROM ENTREGAS);
+
+-- Q22: Productos próximos a caducar en los próximos 90 días
+SELECT nombre_producto, fecha_caducidad,
+       ROUND(fecha_caducidad - SYSDATE) AS dias_restantes
+FROM PRODUCTOS
+WHERE fecha_caducidad BETWEEN SYSDATE AND SYSDATE + 90
+ORDER BY fecha_caducidad ASC;
+
+-- Q23: Número total de donadores registrados
+SELECT COUNT(*) AS total_donadores FROM DONADORES;
+
+-- Q24: Número total de beneficiarios registrados
+SELECT COUNT(*) AS total_beneficiarios FROM BENEFICIARIOS;
+
+-- Q25: Historial de donaciones de un donador específico
+SELECT d.id_donacion, p.nombre_producto, dd.cantidad_donada, d.fecha_donacion
+FROM DONACIONES d
+JOIN DETALLE_DONACION dd ON d.id_donacion = dd.id_donacion
+JOIN PRODUCTOS        p  ON dd.id_producto = p.id_producto
+WHERE d.id_donador = 1
+ORDER BY d.fecha_donacion DESC;
+
+-- Q26: Resumen mensual de donaciones (año-mes, total eventos, total unidades)
+SELECT TO_CHAR(d.fecha_donacion, 'YYYY-MM') AS periodo,
+       COUNT(DISTINCT d.id_donacion)         AS total_donaciones,
+       SUM(dd.cantidad_donada)               AS total_unidades
+FROM DONACIONES d
+JOIN DETALLE_DONACION dd ON d.id_donacion = dd.id_donacion
+GROUP BY TO_CHAR(d.fecha_donacion, 'YYYY-MM')
+ORDER BY periodo DESC;
+
+-- Q27: Inventario actual mostrando balance (donado - entregado) por producto
+SELECT p.nombre_producto,
+       NVL(SUM(dd.cantidad_donada),   0) AS total_donado,
+       NVL(SUM(de.cantidad_entregada),0) AS total_entregado,
+       p.cantidad_existencia             AS stock_actual
+FROM PRODUCTOS p
+LEFT JOIN DETALLE_DONACION dd ON p.id_producto = dd.id_producto
+LEFT JOIN DETALLE_ENTREGA  de ON p.id_producto = de.id_producto
+GROUP BY p.nombre_producto, p.cantidad_existencia
+ORDER BY p.nombre_producto;
+
+-- Q28: Usuarios registrados por rol
+SELECT rol_usuario, COUNT(*) AS total_usuarios
+FROM USUARIOS GROUP BY rol_usuario ORDER BY total_usuarios DESC;
+
+-- Q29: Entregas del mes actual
+SELECT e.id_entrega, b.nombre_completo, e.fecha_entrega
+FROM ENTREGAS e
+JOIN BENEFICIARIOS b ON e.id_beneficiario = b.id_beneficiario
+WHERE TO_CHAR(e.fecha_entrega,'YYYY-MM') = TO_CHAR(SYSDATE,'YYYY-MM')
+ORDER BY e.fecha_entrega DESC;
+
+-- Q30: Donador con mayor cantidad total donada (histórico)
+SELECT dr.nombre_razon_social,
+       SUM(dd.cantidad_donada) AS total_unidades_donadas
+FROM DONADORES dr
+JOIN DONACIONES       d  ON dr.id_donador  = d.id_donador
+JOIN DETALLE_DONACION dd ON d.id_donacion  = dd.id_donacion
+GROUP BY dr.nombre_razon_social
+ORDER BY total_unidades_donadas DESC
+FETCH FIRST 1 ROW ONLY;
