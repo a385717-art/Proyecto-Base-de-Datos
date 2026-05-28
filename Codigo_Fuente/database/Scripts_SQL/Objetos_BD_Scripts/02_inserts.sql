@@ -71,3 +71,65 @@ INSERT INTO DETALLE_ENTREGA (id_detalle_entrega, id_entrega, id_producto, cantid
 
 -- Confirmar permanentemente todos los datos agregados en el servidor
 COMMIT;
+
+-- ==================================================
+-- 5 INSERT adicionales por tabla (ids 6-10)
+-- ==================================================
+
+-- USUARIOS
+INSERT INTO USUARIOS (id_usuario, nombre_usuario, contrasena, rol_usuario) VALUES (6, 'maria_admin', 'maria123', 'ADMIN');
+INSERT INTO USUARIOS (id_usuario, nombre_usuario, contrasena, rol_usuario) VALUES (7, 'luis_ops', 'luis123', 'OPERADOR');
+INSERT INTO USUARIOS (id_usuario, nombre_usuario, contrasena, rol_usuario) VALUES (8, 'sandra_cons', 'sandra123', 'CONSULTA');
+INSERT INTO USUARIOS (id_usuario, nombre_usuario, contrasena, rol_usuario) VALUES (9, 'pedro_aux', 'pedro123', 'OPERADOR');
+INSERT INTO USUARIOS (id_usuario, nombre_usuario, contrasena, rol_usuario) VALUES (10, 'laura_sup', 'laura123', 'ADMIN');
+
+-- DONADORES
+INSERT INTO DONADORES (id_donador, nombre_razon_social, telefono, correo_electronico, direccion) VALUES (6, 'Tienda La Esquina', '6141010101', 'esquina@tienda.com', 'Calle 1');
+INSERT INTO DONADORES (id_donador, nombre_razon_social, telefono, correo_electronico, direccion) VALUES (7, 'Cafeteria Buena', '6142020202', 'contacto@cafebuena.com', 'Av. Central 55');
+INSERT INTO DONADORES (id_donador, nombre_razon_social, telefono, correo_electronico, direccion) VALUES (8, 'Mercado Local', '6143030303', 'mercado@local.com', 'Plaza Mayor 2');
+INSERT INTO DONADORES (id_donador, nombre_razon_social, telefono, correo_electronico, direccion) VALUES (9, 'Empresa Solidaria', '6144040404', 'solidaria@empresa.com', 'Poligono 7');
+INSERT INTO DONADORES (id_donador, nombre_razon_social, telefono, correo_electronico, direccion) VALUES (10, 'Hogar Ayuda', '6145050505', 'ayuda@hogar.com', 'Camino Real 10');
+
+-- BENEFICIARIOS
+INSERT INTO BENEFICIARIOS (id_beneficiario, nombre_completo, num_integrantes_familia, direccion, telefono) VALUES (6, 'Familia Torres', 4, 'Calle Verde 12', '6146667777');
+INSERT INTO BENEFICIARIOS (id_beneficiario, nombre_completo, num_integrantes_familia, direccion, telefono) VALUES (7, 'Centro Comunitario Flores', 25, 'Calle Flores 77', '6148882233');
+INSERT INTO BENEFICIARIOS (id_beneficiario, nombre_completo, num_integrantes_familia, direccion, telefono) VALUES (8, 'Familia Ruiz', 3, 'Col. Lomas 9', '6149991122');
+INSERT INTO BENEFICIARIOS (id_beneficiario, nombre_completo, num_integrantes_familia, direccion, telefono) VALUES (9, 'Casa Hogar San Miguel', 18, 'Av. Sur 200', '6141234433');
+INSERT INTO BENEFICIARIOS (id_beneficiario, nombre_completo, num_integrantes_familia, direccion, telefono) VALUES (10, 'Familia Ortega', 2, 'Col. Palma 45', '6145566778');
+
+-- PRODUCTOS
+INSERT INTO PRODUCTOS (id_producto, nombre_producto, categoria, cantidad_existencia, fecha_caducidad) VALUES (6, 'Harina de Trigo 1kg', 'Granos', 120, TO_DATE('2027-11-01', 'YYYY-MM-DD'));
+INSERT INTO PRODUCTOS (id_producto, nombre_producto, categoria, cantidad_existencia, fecha_caducidad) VALUES (7, 'Azucar 1kg', 'Abarrotes', 80, TO_DATE('2028-03-15', 'YYYY-MM-DD'));
+INSERT INTO PRODUCTOS (id_producto, nombre_producto, categoria, cantidad_existencia, fecha_caducidad) VALUES (8, 'Sopa Instantanea 60g', 'Enlatados', 200, TO_DATE('2029-01-10', 'YYYY-MM-DD'));
+INSERT INTO PRODUCTOS (id_producto, nombre_producto, categoria, cantidad_existencia, fecha_caducidad) VALUES (9, 'Galletas 200g', 'Abarrotes', 150, TO_DATE('2027-07-30', 'YYYY-MM-DD'));
+INSERT INTO PRODUCTOS (id_producto, nombre_producto, categoria, cantidad_existencia, fecha_caducidad) VALUES (10, 'Leche en Polvo 500g', 'Lacteos', 60, TO_DATE('2027-12-05', 'YYYY-MM-DD'));
+
+-- DONACIONES
+INSERT INTO DONACIONES (id_donacion, id_donador, fecha_donacion) VALUES (6, 6, TO_DATE('2026-05-26', 'YYYY-MM-DD'));
+INSERT INTO DONACIONES (id_donacion, id_donador, fecha_donacion) VALUES (7, 7, TO_DATE('2026-05-26', 'YYYY-MM-DD'));
+INSERT INTO DONACIONES (id_donacion, id_donador, fecha_donacion) VALUES (8, 8, TO_DATE('2026-05-26', 'YYYY-MM-DD'));
+INSERT INTO DONACIONES (id_donacion, id_donador, fecha_donacion) VALUES (9, 9, TO_DATE('2026-05-26', 'YYYY-MM-DD'));
+INSERT INTO DONACIONES (id_donacion, id_donador, fecha_donacion) VALUES (10, 10, TO_DATE('2026-05-26', 'YYYY-MM-DD'));
+
+-- DETALLE_DONACION
+INSERT INTO DETALLE_DONACION (id_detalle_donacion, id_donacion, id_producto, cantidad_donada) VALUES (6, 6, 6, 50);
+INSERT INTO DETALLE_DONACION (id_detalle_donacion, id_donacion, id_producto, cantidad_donada) VALUES (7, 7, 7, 40);
+INSERT INTO DETALLE_DONACION (id_detalle_donacion, id_donacion, id_producto, cantidad_donada) VALUES (8, 8, 8, 100);
+INSERT INTO DETALLE_DONACION (id_detalle_donacion, id_donacion, id_producto, cantidad_donada) VALUES (9, 9, 9, 60);
+INSERT INTO DETALLE_DONACION (id_detalle_donacion, id_donacion, id_producto, cantidad_donada) VALUES (10, 10, 10, 30);
+
+-- ENTREGAS
+INSERT INTO ENTREGAS (id_entrega, id_beneficiario, fecha_entrega) VALUES (6, 6, TO_DATE('2026-05-27', 'YYYY-MM-DD'));
+INSERT INTO ENTREGAS (id_entrega, id_beneficiario, fecha_entrega) VALUES (7, 7, TO_DATE('2026-05-27', 'YYYY-MM-DD'));
+INSERT INTO ENTREGAS (id_entrega, id_beneficiario, fecha_entrega) VALUES (8, 8, TO_DATE('2026-05-27', 'YYYY-MM-DD'));
+INSERT INTO ENTREGAS (id_entrega, id_beneficiario, fecha_entrega) VALUES (9, 9, TO_DATE('2026-05-27', 'YYYY-MM-DD'));
+INSERT INTO ENTREGAS (id_entrega, id_beneficiario, fecha_entrega) VALUES (10, 10, TO_DATE('2026-05-27', 'YYYY-MM-DD'));
+
+-- DETALLE_ENTREGA
+INSERT INTO DETALLE_ENTREGA (id_detalle_entrega, id_entrega, id_producto, cantidad_entregada) VALUES (6, 6, 6, 5);
+INSERT INTO DETALLE_ENTREGA (id_detalle_entrega, id_entrega, id_producto, cantidad_entregada) VALUES (7, 7, 7, 8);
+INSERT INTO DETALLE_ENTREGA (id_detalle_entrega, id_entrega, id_producto, cantidad_entregada) VALUES (8, 8, 8, 12);
+INSERT INTO DETALLE_ENTREGA (id_detalle_entrega, id_entrega, id_producto, cantidad_entregada) VALUES (9, 9, 9, 6);
+INSERT INTO DETALLE_ENTREGA (id_detalle_entrega, id_entrega, id_producto, cantidad_entregada) VALUES (10, 10, 10, 4);
+
+COMMIT;
